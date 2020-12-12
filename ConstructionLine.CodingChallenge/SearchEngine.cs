@@ -12,7 +12,7 @@ namespace ConstructionLine.CodingChallenge
 
         public SearchEngine(List<Shirt> shirts)
         {
-            _shirts = shirts;
+            _shirts = shirts ?? throw new ArgumentNullException(nameof(shirts));
 
             _sizeCounts = Size.All.Select(size => new SizeCount
             {

@@ -30,6 +30,12 @@ namespace ConstructionLine.CodingChallenge.Tests
             AssertColorCounts(shirts, searchOptions, results.ColorCounts);
         }
 
+        [Test]
+        public void Search_GivenNullShirts_Throws_ArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => new SearchEngine(null));
+        }
+
         private static IEnumerable<IEnumerable<Shirt>> GetTestShirts()
         {
             var testShirts = new List<List<Shirt>>();
