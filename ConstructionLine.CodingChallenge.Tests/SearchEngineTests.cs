@@ -9,17 +9,11 @@ namespace ConstructionLine.CodingChallenge.Tests
     public class SearchEngineTests : SearchEngineTestsBase
     {
         [Test, Combinatorial]
-        public void Search_GivenSizeColorOptions_ShouldReturnCorrectResult([ValueSource("GenerateSizeOptions")] IEnumerable<Size> sizeOptions, [ValueSource("GenerateColorOptions")] IEnumerable<Color> colorOptions)
+        public void Search_GivenSizeColorOptions_ShouldReturnCorrectResult([ValueSource("GenerateSizeOptions")] IEnumerable<Size> sizeOptions, 
+                                                                           [ValueSource("GenerateColorOptions")] IEnumerable<Color> colorOptions,
+                                                                           [ValueSource("GetTestShirts")] IEnumerable<Shirt> testShirts)
         {
-            var shirts = new List<Shirt>
-            {
-                new Shirt(Guid.NewGuid(), "Red - Small", Size.Small, Color.Red),
-                new Shirt(Guid.NewGuid(), "Black - Medium", Size.Medium, Color.Black),
-                new Shirt(Guid.NewGuid(), "Blue - Large", Size.Large, Color.Blue),
-            };
-
-            Console.WriteLine(string.Join(",", colorOptions.Select(c => c.Name)));
-            Console.WriteLine(string.Join(",", sizeOptions.Select(s => s.Name)));
+            var shirts = testShirts.ToList();
 
             var searchEngine = new SearchEngine(shirts);
 
@@ -31,17 +25,55 @@ namespace ConstructionLine.CodingChallenge.Tests
 
             var results = searchEngine.Search(searchOptions);
 
-            Console.WriteLine(string.Join(",", results.Shirts.Select(s => s.Name)));
-
             AssertResults(results.Shirts, searchOptions);
             AssertSizeCounts(shirts, searchOptions, results.SizeCounts);
             AssertColorCounts(shirts, searchOptions, results.ColorCounts);
+        }
+
+        private static IEnumerable<IEnumerable<Shirt>> GetTestShirts()
+        {
+            var testShirts = new List<List<Shirt>>();
+
+            testShirts.Add(new List<Shirt>
+            {
+                new Shirt(Guid.NewGuid(), "Red - Small", Size.Small, Color.Red),
+                new Shirt(Guid.NewGuid(), "Black - Medium", Size.Medium, Color.Black),
+                new Shirt(Guid.NewGuid(), "Blue - Large", Size.Large, Color.Blue),
+            });
+
+            testShirts.Add(new List<Shirt>
+            {
+            });
+
+            testShirts.Add(new List<Shirt>
+            {
+                new Shirt(Guid.NewGuid(), "Red - Small", Size.Small, Color.Red),
+                new Shirt(Guid.NewGuid(), "Red - Medium", Size.Medium, Color.Red),
+                new Shirt(Guid.NewGuid(), "Red - Large", Size.Large, Color.Red),
+            });
+
+
+            testShirts.Add(new List<Shirt>
+            {
+                new Shirt(Guid.NewGuid(), "Red - Small", Size.Small, Color.Red),
+                new Shirt(Guid.NewGuid(), "Black - Small", Size.Small, Color.Black),
+                new Shirt(Guid.NewGuid(), "Blue - Small", Size.Small, Color.Blue),
+            });
+
+            testShirts.Add(new List<Shirt>
+            {
+                new Shirt(Guid.NewGuid(), "Red - Small", Size.Small, Color.Red),
+                new Shirt(Guid.NewGuid(), "Red - Small", Size.Small, Color.Red),
+            });
+
+            return testShirts;
         }
 
         private static IEnumerable<IEnumerable<Size>> GenerateSizeOptions()
         {
             return Permutations(Size.All);
         }
+
         private static IEnumerable<IEnumerable<Color>> GenerateColorOptions()
         {
             return Permutations(Color.All);
