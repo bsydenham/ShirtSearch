@@ -24,35 +24,6 @@ namespace ConstructionLine.CodingChallenge.Tests
                                 $"when selected sizes where '{string.Join(",", options.Sizes.Select(s => s.Name))}' " +
                                 $"and colors '{string.Join(",", options.Colors.Select(c => c.Name))}'");
                 }
-
-                if (sizeIds.Any() && colorIds.Any())
-                {
-                    if (!sizeIds.Contains(shirt.Size.Id) && colorIds.Contains(shirt.Color.Id))
-                    {
-                        Assert.Fail();
-                    }
-
-                    if (sizeIds.Contains(shirt.Size.Id) && !colorIds.Contains(shirt.Color.Id))
-                    {
-                        Assert.Fail();
-                    }
-                }
-
-                if (!sizeIds.Any() && colorIds.Any())
-                {
-                    if (!colorIds.Contains(shirt.Color.Id))
-                    {
-                        Assert.Fail();
-                    }
-                }
-
-                if (sizeIds.Any() && !colorIds.Any())
-                {
-                    if (!sizeIds.Contains(shirt.Size.Id))
-                    {
-                        Assert.Fail();
-                    }
-                }
             }
         }
 

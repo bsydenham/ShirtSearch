@@ -31,12 +31,13 @@ namespace ConstructionLine.CodingChallenge
         public SearchResults Search(SearchOptions options)
         {
             var optionSizeIds = options.Sizes.Select(size => size.Id).ToList();
-            var optionsColorIds = options.Colors.Select(color => color.Id).ToList();
+            var optionColorIds = options.Colors.Select(color => color.Id).ToList();
 
-            var matchingShirts = GetMatchingShirts(optionSizeIds, optionsColorIds);
+            var matchingShirts = _shirts.Where(shirt => (!options.Sizes.Any() || options.Sizes.Any(size => size == shirt.Size)) 
+                                                    && (!options.Colors.Any() || options.Colors.Any(color => color == shirt.Color))).ToList();
 
             ChangeSizeCounts(optionSizeIds, matchingShirts);
-            ChangeColorCounts(optionsColorIds, matchingShirts);
+            ChangeColorCounts(optionColorIds, matchingShirts);
 
             return new SearchResults
             {
@@ -44,29 +45,6 @@ namespace ConstructionLine.CodingChallenge
                 SizeCounts = _sizeCounts,
                 ColorCounts = _colorCounts
             };
-        }
-
-        private List<Shirt> GetMatchingShirts(List<Guid> optionSizeIds, List<Guid> optionColorIds)
-        {
-            var anySizeOptions = optionSizeIds.Any();
-            var anyColorOptions = optionColorIds.Any();
-
-            if (anySizeOptions && anyColorOptions)
-            {
-                return _shirts.Where(shirt => optionSizeIds.Contains(shirt.Size.Id) && optionColorIds.Contains(shirt.Color.Id)).ToList();
-            }
-
-            if (!anySizeOptions && anyColorOptions)
-            {
-                return _shirts.Where(shirt => optionColorIds.Contains(shirt.Color.Id)).ToList();
-            }
-
-            if (anySizeOptions && !anyColorOptions)
-            {
-                return _shirts.Where(shirt => optionSizeIds.Contains(shirt.Size.Id)).ToList();
-            }
-
-            return _shirts;
         }
 
         private void ChangeSizeCounts(List<Guid> optionSizeIds, List<Shirt> matchingShirts)
