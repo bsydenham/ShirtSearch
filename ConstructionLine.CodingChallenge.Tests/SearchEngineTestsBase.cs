@@ -24,6 +24,35 @@ namespace ConstructionLine.CodingChallenge.Tests
                                 $"when selected sizes where '{string.Join(",", options.Sizes.Select(s => s.Name))}' " +
                                 $"and colors '{string.Join(",", options.Colors.Select(c => c.Name))}'");
                 }
+
+                if (sizeIds.Any() && colorIds.Any())
+                {
+                    if (!sizeIds.Contains(shirt.Size.Id) && colorIds.Contains(shirt.Color.Id))
+                    {
+                        Assert.Fail();
+                    }
+
+                    if (sizeIds.Contains(shirt.Size.Id) && !colorIds.Contains(shirt.Color.Id))
+                    {
+                        Assert.Fail();
+                    }
+                }
+
+                if (!sizeIds.Any() && colorIds.Any())
+                {
+                    if (!colorIds.Contains(shirt.Color.Id))
+                    {
+                        Assert.Fail();
+                    }
+                }
+
+                if (sizeIds.Any() && !colorIds.Any())
+                {
+                    if (!sizeIds.Contains(shirt.Size.Id))
+                    {
+                        Assert.Fail();
+                    }
+                }
             }
         }
 
@@ -32,7 +61,7 @@ namespace ConstructionLine.CodingChallenge.Tests
         {
             Assert.That(sizeCounts, Is.Not.Null);
 
-            foreach (var size in Size.All)
+            foreach (var size in searchOptions.Sizes)
             {
                 var sizeCount = sizeCounts.SingleOrDefault(s => s.Size.Id == size.Id);
                 Assert.That(sizeCount, Is.Not.Null, $"Size count for '{size.Name}' not found in results");
@@ -51,7 +80,7 @@ namespace ConstructionLine.CodingChallenge.Tests
         {
             Assert.That(colorCounts, Is.Not.Null);
             
-            foreach (var color in Color.All)
+            foreach (var color in searchOptions.Colors)
             {
                 var colorCount = colorCounts.SingleOrDefault(s => s.Color.Id == color.Id);
                 Assert.That(colorCount, Is.Not.Null, $"Color count for '{color.Name}' not found in results");
